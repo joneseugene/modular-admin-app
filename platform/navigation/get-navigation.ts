@@ -1,11 +1,13 @@
+
 import { FEATURE_LIST } from "@/config/features";
-
+import type { AuthorizationContext } from "@/platform/authorization/authorization.types";
 import type {
-  FeatureDefinition,
+  ModuleDefinition,
   NavigationGroup,
-} from "@/config/features";
+} from "@/platform/modules/module.types";
+import { resolveModuleAccess } from "../modules/module.access";
 
-const GROUP_ORDER: NavigationGroup[] = [
+const GROUP_ORDER: readonly NavigationGroup[] = [
   "Overview",
   "Administration",
   "System",
@@ -13,18 +15,26 @@ const GROUP_ORDER: NavigationGroup[] = [
 
 export interface NavigationSection {
   group: NavigationGroup;
-  items: FeatureDefinition[];
+  items: ModuleDefinition[];
 }
 
-export function getNavigation(): NavigationSection[] {
-  const visibleFeatures = FEATURE_LIST.filter(
-    (feature) => feature.enabled && feature.showInSidebar,
-  );
+export function getNavigation(
+  context: AuthorizationContext,
+): NavigationSection[] {
+  const visibleFeatures = FEATURE_LIST.filter((feature) => {
+    if (!feature.showInSidebar) {
+      return false;
+    }
 
-  return GROUP_ORDER.map((group) => ({
-    group,
-    items: visibleFeatures.filter(
-      (feature) => feature.group === group,
-    ),
-  })).filter((section) => section.items.length > 0);
+    return resolveModuleAccess(feature, context).allowed;
+  });
+
+  return GROUP_ORDER
+    .map((group) => ({
+      group,
+      items: visibleFeatures.filter(
+        (feature) => feature.group === group,
+      ),
+    }))
+    .filter((section) => section.items.length > 0);
 }

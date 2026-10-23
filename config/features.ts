@@ -1,12 +1,13 @@
+
 import {
   Blocks,
   LayoutDashboard,
   ShieldCheck,
   Users,
-  type LucideIcon,
 } from "lucide-react";
-
+import type { ModuleDefinition } from "@/platform/modules/module.types";
 import { ROUTES } from "@/config/routes";
+import { PERMISSIONS } from "@/platform/authorization/permissions";
 
 export type FeatureKey =
   | "dashboard"
@@ -14,23 +15,7 @@ export type FeatureKey =
   | "roles"
   | "features";
 
-export type NavigationGroup =
-  | "Overview"
-  | "Administration"
-  | "System";
-
-export interface FeatureDefinition {
-  key: FeatureKey;
-  path: string;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-  group: NavigationGroup;
-  order: number;
-  enabled: boolean;
-  showInSidebar: boolean;
-  showInHeader: boolean;
-}
+export type FeatureDefinition = ModuleDefinition<FeatureKey>;
 
 export const FEATURES = {
   dashboard: {
@@ -44,7 +29,9 @@ export const FEATURES = {
     enabled: true,
     showInSidebar: true,
     showInHeader: false,
+    requiredPermissions: [],
   },
+
   users: {
     key: "users",
     path: ROUTES.admin.users,
@@ -56,7 +43,9 @@ export const FEATURES = {
     enabled: true,
     showInSidebar: true,
     showInHeader: false,
+    requiredPermissions: [PERMISSIONS.users.view],
   },
+
   roles: {
     key: "roles",
     path: ROUTES.admin.roles,
@@ -68,7 +57,9 @@ export const FEATURES = {
     enabled: true,
     showInSidebar: true,
     showInHeader: false,
+    requiredPermissions: [PERMISSIONS.roles.view],
   },
+
   features: {
     key: "features",
     path: ROUTES.admin.features,
@@ -80,6 +71,7 @@ export const FEATURES = {
     enabled: true,
     showInSidebar: true,
     showInHeader: false,
+    requiredPermissions: [PERMISSIONS.features.view],
   },
 } satisfies Record<FeatureKey, FeatureDefinition>;
 

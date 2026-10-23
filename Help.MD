@@ -4,6 +4,9 @@ pnpm add @supabase/supabase-js @supabase/ssr zod lucide-react
 # Unit Testing
 pnpm add -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event @playwright/test
 
+pnpm add -D vite-tsconfig-paths
+pnpm remove -D vite-tsconfig-paths        
+
 # Setup project folders
 $folders = @(
     "config",

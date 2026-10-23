@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -5,15 +6,33 @@ import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 
 import { getNavigation } from "@/platform/navigation/get-navigation";
+import type { AuthorizationContext } from "@/platform/authorization/authorization.types";
+import { PERMISSIONS } from "@/platform/authorization/permissions";
 
 interface SidebarProps {
   mobileOpen: boolean;
   onClose: () => void;
 }
 
+/**
+ * Temporary development-only authorization context.
+ *
+ * Replace this with the authenticated user's permissions
+ * when Supabase authorization is implemented.
+ */
+const DEMO_AUTHORIZATION_CONTEXT: AuthorizationContext = {
+  userId: "demo-admin",
+  permissions: new Set([
+    PERMISSIONS.dashboard.view,
+    PERMISSIONS.users.view,
+    PERMISSIONS.roles.view,
+  ]),
+};
+
 export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const sections = getNavigation();
+
+  const sections = getNavigation(DEMO_AUTHORIZATION_CONTEXT);
 
   return (
     <>
