@@ -26,3 +26,26 @@ foreach ($folder in $folders) {
     New-Item -ItemType Directory -Path $folder -Force |
         Out-Null
 }
+
+# Generate Database Types
+pnpm exec supabase gen types typescript --linked > lib/supabase/database.types.ts
+
+# Create Migration file
+pnpm exec supabase migration new bootstrap_super_admin
+
+pnpm exec supabase db push                               
+
+# Generate Secret
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$bytes = New-Object byte[] 32
+$rng.GetBytes($bytes)
+$bootstrapSecret = [System.BitConverter]::ToString($bytes).Replace("-", "").ToLower()
+$rng.Dispose()
+
+if ([string]::IsNullOrWhiteSpace($bootstrapSecret)) {
+    throw "Failed to generate bootstrap secret."
+}
+Write-Host "Bootstrap secret generated successfully."
+
+# Display Secret
+$bootstrapSecret
