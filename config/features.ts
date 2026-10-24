@@ -1,8 +1,8 @@
-
 import {
   Blocks,
   LayoutDashboard,
   ShieldCheck,
+  User,
   Users,
 } from "lucide-react";
 import type { ModuleDefinition } from "@/platform/modules/module.types";
@@ -13,7 +13,8 @@ export type FeatureKey =
   | "dashboard"
   | "users"
   | "roles"
-  | "features";
+  | "features"
+  | "profile";
 
 export type FeatureDefinition = ModuleDefinition<FeatureKey>;
 
@@ -73,8 +74,22 @@ export const FEATURES = {
     showInHeader: false,
     requiredPermissions: [PERMISSIONS.features.view],
   },
+
+  profile: {
+    key: "profile",
+    path: "/profile",
+    label: "My Profile",
+    description: "View and update your account profile.",
+    icon: User,
+    group: "Administration",
+    order: 100,
+    enabled: true,
+    showInSidebar: false,
+    showInHeader: false,
+    requiredPermissions: [],
+  },
 } satisfies Record<FeatureKey, FeatureDefinition>;
 
-export const FEATURE_LIST: FeatureDefinition[] = Object.values(
-  FEATURES,
-).sort((a, b) => a.order - b.order);
+export const FEATURE_LIST: FeatureDefinition[] = Object.values(FEATURES).sort(
+  (a, b) => a.order - b.order,
+);

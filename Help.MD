@@ -5,7 +5,13 @@ pnpm add @supabase/supabase-js @supabase/ssr zod lucide-react
 pnpm add -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event @playwright/test
 
 pnpm add -D vite-tsconfig-paths
-pnpm remove -D vite-tsconfig-paths        
+pnpm remove -D vite-tsconfig-paths    
+
+pnpm add react-hook-form @hookform/resolvers @tanstack/react-table clsx tailwind-merge class-variance-authority
+
+pnpm add react-hook-form zod @hookform/resolvers
+
+pnpm add @radix-ui/react-dialog
 
 # Setup project folders
 $folders = @(
@@ -34,18 +40,3 @@ pnpm exec supabase gen types typescript --linked > lib/supabase/database.types.t
 pnpm exec supabase migration new bootstrap_super_admin
 
 pnpm exec supabase db push                               
-
-# Generate Secret
-$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
-$bytes = New-Object byte[] 32
-$rng.GetBytes($bytes)
-$bootstrapSecret = [System.BitConverter]::ToString($bytes).Replace("-", "").ToLower()
-$rng.Dispose()
-
-if ([string]::IsNullOrWhiteSpace($bootstrapSecret)) {
-    throw "Failed to generate bootstrap secret."
-}
-Write-Host "Bootstrap secret generated successfully."
-
-# Display Secret
-$bootstrapSecret

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { getBrowserAuthService } from "@/platform/services/auth/auth.browser";
@@ -11,7 +11,6 @@ type RecoveryStatus = "checking" | "ready" | "invalid" | "complete";
 
 export function ChangePasswordForm() {
   const router = useRouter();
-  const hasExchangedCode = useRef(false);
 
   const [status, setStatus] = useState<RecoveryStatus>("checking");
   const [password, setPassword] = useState("");
@@ -20,38 +19,32 @@ export function ChangePasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (hasExchangedCode.current) {
-      return;
-    }
+    let cancelled = false;
 
-    hasExchangedCode.current = true;
-
-    async function establishRecoverySession() {
-      const code = new URLSearchParams(window.location.search).get("code");
-
-      if (!code) {
-        setStatus("invalid");
-        return;
-      }
-
+    async function checkRecoverySession() {
       try {
-        const result =
-          await getBrowserAuthService().exchangeCodeForSession(code);
+        const result = await getBrowserAuthService().getCurrentUser();
 
-        window.history.replaceState({}, "", `${ROUTES.auth.change_password}`);
+        if (cancelled) return;
 
-        if (!result.success) {
+        if (!result.success || !result.data) {
           setStatus("invalid");
           return;
         }
 
         setStatus("ready");
       } catch {
-        setStatus("invalid");
+        if (!cancelled) {
+          setStatus("invalid");
+        }
       }
     }
 
-    void establishRecoverySession();
+    void checkRecoverySession();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -171,10 +164,7 @@ export function ChangePasswordForm() {
         </div>
 
         <div className="space-y-1">
-          <label
-            htmlFor="confirm-new-password"
-            className="text-sm font-medium"
-          >
+          <label htmlFor="confirm-new-password" className="text-sm font-medium">
             Confirm new password
           </label>
           <input

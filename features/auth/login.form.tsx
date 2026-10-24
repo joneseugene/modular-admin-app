@@ -114,7 +114,7 @@ export function LoginForm() {
           href={ROUTES.auth.forgot_password}
           className="font-medium text-gray-900 underline underline-offset-4"
         >
-          Reset it
+          Set Password
         </Link>
       </p>
     </section>

@@ -19,12 +19,21 @@ export function ForgotPasswordForm() {
     setIsSubmitting(true);
 
     try {
-      const redirectTo = `${window.location.origin}/reset-password`;
-
-      const result = await getBrowserAuthService().requestPasswordReset(
-        email.trim(),
-        redirectTo,
+      const redirectUrl = new URL(
+        "/api/callback",
+        window.location.origin,
       );
+
+      redirectUrl.searchParams.set(
+        "next",
+        ROUTES.auth.change_password,
+      );
+
+      const result =
+        await getBrowserAuthService().requestPasswordReset(
+          email.trim(),
+          redirectUrl.toString(),
+        );
 
       if (!result.success) {
         setError(result.error.message);
@@ -34,8 +43,14 @@ export function ForgotPasswordForm() {
       setMessage(
         "If an account matches that email, a password-recovery link will be sent. Check your inbox and spam folder.",
       );
-    } catch {
-      setError("Unable to request a recovery email. Please try again.");
+    }catch (error: unknown) {
+      console.error("[ForgotPasswordForm] Recovery request failed:", error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to request a recovery email. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -49,7 +64,7 @@ export function ForgotPasswordForm() {
         </p>
 
         <h1 className="text-3xl font-semibold tracking-tight">
-          Reset your password
+          Change your password
         </h1>
 
         <p className="text-sm text-gray-600">
@@ -59,7 +74,10 @@ export function ForgotPasswordForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
-          <label htmlFor="recovery-email" className="text-sm font-medium">
+          <label
+            htmlFor="recovery-email"
+            className="text-sm font-medium"
+          >
             Email address
           </label>
 

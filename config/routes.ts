@@ -3,7 +3,7 @@ export const ROUTES = {
     login: "/login",
     register: "/register",
     forgot_password: "/forgot-password",
-    change_password: "change-password",
+    change_password: "/change-password",
 
   },
   forbidden: "/forbidden",
@@ -13,6 +13,7 @@ export const ROUTES = {
     users: "/users",
     roles: "/roles",
     features: "/features",
+    profile: "/profile",
   },
 } as const;
 

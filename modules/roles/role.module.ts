@@ -1,8 +1,8 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createCrudService } from "@/platform/services/crud.factory";
+import { createRoleService } from "@/platform/services/data/role.service";
 
 export async function getRolesService() {
   const client = await createSupabaseServerClient();
 
-  return createCrudService(client, "roles");
+  return createRoleService(client);
 }
