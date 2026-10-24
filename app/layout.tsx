@@ -1,23 +1,27 @@
 
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import type { ReactNode } from "react";
 
 import "./globals.css";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
+import { AppEntryGate } from "@/features/onboarding/app-entry-gate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const APP_NAME = "OsusuBook";
 const APP_DESCRIPTION =
-  "A modular administration platform with configurable access control.";
+  "A simpler way to organise Osusu groups, track contributions, and build trust.";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -30,18 +34,24 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: APP_NAME,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
   },
   formatDetection: {
     telephone: false,
+    email: false,
+    address: false,
   },
   icons: {
     icon: [
-      { url: "/icons/icon.svg", type: "image/svg+xml" },
+      {
+        url: "/icons/osusubook.svg",
+        type: "image/svg+xml",
+      },
     ],
-    apple: [
-      { url: "/icons/apple-touch-icon.svg", type: "image/svg+xml" },
-    ],
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 
@@ -49,22 +59,22 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#065f46",
+  themeColor: "#16834A",
   colorScheme: "light",
 };
 
 interface RootLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} min-h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        {children}
+      <body className="flex min-h-dvh flex-col bg-background text-foreground">
+        <AppEntryGate>{children}</AppEntryGate>
         <ServiceWorkerRegister />
       </body>
     </html>

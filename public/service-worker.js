@@ -1,18 +1,18 @@
 
-const CACHE_NAME = "modular-admin-shell-v1";
+const CACHE_NAME = "osusubook-shell-v1";
 const OFFLINE_URL = "/offline";
+
+const SHELL_ASSETS = [
+  OFFLINE_URL,
+  "/manifest.webmanifest",
+  "/icons/osusubook.svg",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) =>
-        cache.addAll([
-          OFFLINE_URL,
-          "/manifest.webmanifest",
-          "/icons/icon.svg",
-        ]),
-      )
+      .then((cache) => cache.addAll(SHELL_ASSETS))
       .then(() => self.skipWaiting()),
   );
 });
@@ -26,7 +26,7 @@ self.addEventListener("activate", (event) => {
           keys
             .filter(
               (key) =>
-                key.startsWith("modular-admin-shell-") &&
+                key.startsWith("osusubook-shell-") &&
                 key !== CACHE_NAME,
             )
             .map((key) => caches.delete(key)),
@@ -43,30 +43,43 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
 
+  // Only handle requests belonging to this application.
   if (url.origin !== self.location.origin) return;
 
-  // Never cache API, authentication, or Next.js server-component requests.
+  // Never intercept APIs, authentication, Supabase endpoints,
+  // Next.js server-component requests, or application bundles.
   if (
     url.pathname.startsWith("/api/") ||
     url.pathname.startsWith("/auth/") ||
     url.pathname.startsWith("/_next/") ||
-    url.pathname.includes("/rest/v1/") ||
-    url.pathname.includes("/storage/v1/")
+    url.pathname.startsWith("/rest/v1/") ||
+    url.pathname.startsWith("/auth/v1/") ||
+    url.pathname.startsWith("/storage/v1/") ||
+    url.pathname.startsWith("/functions/v1/") ||
+    url.pathname.startsWith("/realtime/v1/")
   ) {
     return;
   }
 
-  // Network-first for pages. Do not cache private HTML responses.
+  // Network-first navigation. Private HTML is never written
+  // to the cache; failures display the public offline screen.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request).catch(async () => {
         const cache = await caches.open(CACHE_NAME);
-        return (
-          (await cache.match(OFFLINE_URL)) ||
-          new Response("You are offline. Please reconnect and try again.", {
+        const offlinePage = await cache.match(OFFLINE_URL);
+
+        if (offlinePage) return offlinePage;
+
+        return new Response(
+          "You are offline. Reconnect and try again.",
+          {
             status: 503,
-            headers: { "Content-Type": "text/plain; charset=utf-8" },
-          })
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8",
+              "Cache-Control": "no-store",
+            },
+          },
         );
       }),
     );
@@ -74,26 +87,37 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Cache only the app's own public manifest and icon assets.
-  if (
+  // Cache only public branding and manifest assets.
+  const isPublicShellAsset =
     url.pathname === "/manifest.webmanifest" ||
-    url.pathname.startsWith("/icons/")
-  ) {
-    event.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request).then((response) => {
-            if (response.ok) {
-              const copy = response.clone();
-              void caches.open(CACHE_NAME).then((cache) =>
-                cache.put(request, copy),
-              );
-            }
+    url.pathname === "/icons/osusubook.svg";
 
-            return response;
-          }),
-      ),
-    );
-  }
+  if (!isPublicShellAsset) return;
+
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cachedResponse = await cache.match(request);
+
+      if (cachedResponse) return cachedResponse;
+
+      try {
+        const response = await fetch(request);
+
+        if (response.ok) {
+          await cache.put(request, response.clone());
+        }
+
+        return response;
+      } catch {
+        return new Response("Asset unavailable offline.", {
+          status: 503,
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            "Cache-Control": "no-store",
+          },
+        });
+      }
+    })(),
+  );
 });
