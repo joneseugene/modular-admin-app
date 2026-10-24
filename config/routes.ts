@@ -1,13 +1,13 @@
 export const ROUTES = {
+  welcome: "/welcome",
+  forbidden: "/forbidden",
+  notfound: "notfound",
   auth: {
     login: "/login",
     register: "/register",
     forgot_password: "/forgot-password",
     change_password: "/change-password",
-
   },
-  forbidden: "/forbidden",
-  notfound: "notfound",
   admin: {
     dashboard: "/dashboard",
     users: "/users",
