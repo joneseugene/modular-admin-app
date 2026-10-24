@@ -1,0 +1,26 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">OsusuBook</title>
+
+  <rect width="512" height="512" rx="112" fill="#16834A"></rect>
+
+  <circle cx="365" cy="145" r="66" fill="#F4C542"></circle>
+
+  <circle cx="365" cy="145" r="43" fill="none" stroke="#111827" stroke-width="10"></circle>
+
+  <path d="M345 145h40M365 125v40" fill="none" stroke="#111827" stroke-width="10" stroke-linecap="round"></path>
+
+  <path d="M105 172c48-18 96-11 151 20v190c-55-31-103-38-151-20z" fill="#FFFFFF"></path>
+
+  <path d="M407 172c-48-18-96-11-151 20v190c55-31 103-38 151-20z" fill="#F8FAF5"></path>
+
+  <path d="M256 192v190" fill="none" stroke="#111827" stroke-width="12" stroke-linecap="round"></path>
+
+  <path d="M132 218c30-7 57-2 83 10M132 257c30-7 57-2 83 10M132 296c30-7 57-2 83 10" fill="none" stroke="#16834A" stroke-width="12" stroke-linecap="round"></path>
+
+  <path d="M297 228c27-12 54-17 83-10M297 267c27-12 54-17 83-10M297 306c27-12 54-17 83-10" fill="none" stroke="#16834A" stroke-width="12" stroke-linecap="round"></path>
+
+  <path d="M105 172v190c48-18 96-11 151 20V192c-55-31-103-38-151-20z" fill="none" stroke="#111827" stroke-width="12" stroke-linejoin="round"></path>
+
+  <path d="M407 172v190c-48-18-96-11-151 20V192c55-31 103-38 151-20z" fill="none" stroke="#111827" stroke-width="12" stroke-linejoin="round"></path>
+</svg>

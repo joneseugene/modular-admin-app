@@ -4,6 +4,15 @@ pnpm add @supabase/supabase-js @supabase/ssr zod lucide-react
 # Unit Testing
 pnpm add -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event @playwright/test
 
+pnpm add -D vite-tsconfig-paths
+pnpm remove -D vite-tsconfig-paths    
+
+pnpm add react-hook-form @hookform/resolvers @tanstack/react-table clsx tailwind-merge class-variance-authority
+
+pnpm add react-hook-form zod @hookform/resolvers
+
+pnpm add @radix-ui/react-dialog
+
 # Setup project folders
 $folders = @(
     "config",
@@ -23,3 +32,11 @@ foreach ($folder in $folders) {
     New-Item -ItemType Directory -Path $folder -Force |
         Out-Null
 }
+
+# Generate Database Types
+pnpm exec supabase gen types typescript --linked > lib/supabase/database.types.ts
+
+# Create Migration file
+pnpm exec supabase migration new bootstrap_super_admin
+
+pnpm exec supabase db push                               
