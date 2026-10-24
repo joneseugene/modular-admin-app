@@ -1,0 +1,22 @@
+
+{
+  "id": "/",
+  "name": "OsusuBook",
+  "short_name": "Osusu Book",
+  "description": "A friendly platform used to manage Osusu",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#065f46",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

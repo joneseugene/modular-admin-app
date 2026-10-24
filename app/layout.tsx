@@ -1,6 +1,9 @@
-import type { Metadata } from "next";
+
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
+import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,24 +15,58 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const APP_NAME = "OsusuBook";
+const APP_DESCRIPTION =
+  "A modular administration platform with configurable access control.";
 
 export const metadata: Metadata = {
+  applicationName: APP_NAME,
   title: {
-    default: "Modular Admin Lab",
-    template: "%s | Modular Admin Lab",
+    default: APP_NAME,
+    template: "%s | OsusuBook",
   },
-  description:
-    "A modular administration platform with a centralized feature registry, reusable application shell, and configurable access control.",
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: APP_NAME,
+    statusBarStyle: "default",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#065f46",
+  colorScheme: "light",
+};
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <ServiceWorkerRegister />
+      </body>
     </html>
   );
 }

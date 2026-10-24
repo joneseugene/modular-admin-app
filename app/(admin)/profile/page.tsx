@@ -5,7 +5,7 @@ import { getCurrentProfile } from "@/modules/auth/get-current-profile.module";
 import { ProfileFeature } from "@/features/admin/profile/profile.feature";
 
 export const metadata = {
-  title: "My Profile | Modular Admin Lab",
+  title: "My Profile | OsusuBook",
   description: "View and update your account profile.",
 };
 

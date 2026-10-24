@@ -68,7 +68,7 @@ export function RegisterForm() {
     <section className="w-full space-y-6">
       <header className="space-y-2">
         <p className="text-sm font-medium text-gray-500">
-          Modular Admin Lab
+          OsusuBook
         </p>
 
         <h1 className="text-3xl font-semibold tracking-tight">

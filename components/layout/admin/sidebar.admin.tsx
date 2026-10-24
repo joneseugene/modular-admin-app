@@ -122,7 +122,7 @@ export function Sidebar({ mobileOpen, onClose, pathname }: SidebarProps) {
         </nav>
 
         <div className="border-t border-slate-200 p-4">
-          <p className="text-xs text-slate-500">Modular Admin Lab</p>
+          <p className="text-xs text-slate-500">OsusuBook</p>
           <p className="mt-1 text-xs text-slate-400">Development environment</p>
         </div>
       </aside>
